@@ -23,3 +23,7 @@ Genetic programming: http://gplearn.readthedocs.org/en/latest/examples.html#exam
 Recursive Feature Elimination: Use all features -> drop the feature that results in biggest CV gain -> repeat till no improvement
 
 Automation: Try to infer type of feature automatically with scripts and create feature engineering pipelines. This scales and can be used even when the features are not anonymized.
+
+
+NN Methods
+with my nn implementation best what I got is 5CV:0.468096 lb:0.46899. Its a 1000(relu)-1000(relu)-1(sigmoid) net with high dropout=0.9 in hidden layers, 110 epochs SGD. nn is very sensitive to data preprocessing, I think there is room for improvement. I use 1-hot for categories and rank trafo for numerics.
