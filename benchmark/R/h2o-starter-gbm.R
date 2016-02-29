@@ -1,12 +1,12 @@
 # Simple GBM in R: no data prep at all
-
+setwd("/Users/ivanliu/Downloads/Kaggle_BNP")
 library(h2o)
 h2o.init(nthreads=-1,max_mem_size = '8G')
 ### load both files in using H2O's parallel import
-train<-h2o.uploadFile("../input/train.csv",destination_frame = "train.hex")  
-test<-h2o.uploadFile("../input/test.csv",destination_frame = "test.hex")     
+train<-h2o.uploadFile("./data/train.csv",destination_frame = "train.hex")  
+test<-h2o.uploadFile("./data/test.csv",destination_frame = "test.hex")     
 train$target<-as.factor(train$target)
-splits<-h2o.splitFrame(train,0.9,destination_frames = c("trainSplit","validSplit"),seed=111111111)
+splits<-h2o.splitFrame(train,0.9,destination_frames = c("trainSplit","validSplit"))
 gbm<-h2o.gbm(
   x = 3:133,
   y=2,

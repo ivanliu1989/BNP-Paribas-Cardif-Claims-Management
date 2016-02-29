@@ -8,13 +8,13 @@ library(xgboost)
 # Input data files are available in the "../input/" directory.
 # For example, running this (by clicking run or pressing Shift+Enter) will list the files in the input directory
 
-system("ls ../input")
+system("ls ./data")
 
 # Any results you write to the current directory are saved as output.
-train <- read.table("../input/train.csv", header=T, sep=",") 
+train <- read.table("./data/train.csv", header=T, sep=",") 
 y <- train[, 'target']
 train <- train[, -2]
-test <- read.table("../input/test.csv", header=T, sep=",") 
+test <- read.table("./data/test.csv", header=T, sep=",") 
 train[is.na(train)] <- -1
 test[is.na(test)] <- -1
 

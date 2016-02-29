@@ -5,8 +5,8 @@
 
 ## Read Data
 library(readr)
-train_data <- read_csv("../input/train.csv")
-test_data  <- read_csv("../input/test.csv")
+train_data <- read_csv("./data/train.csv")
+test_data  <- read_csv("./data/test.csv")
 
 ## Putting NA's to target column in test dataset
 test_data$target <- rep(NA,nrow(test_data))
