@@ -23,11 +23,11 @@ if __name__ == "__main__":
 
     print ("Read Data")
 
-    train=pd.read_csv("../input/train.csv")
+    train=pd.read_csv("./data/train.csv")
     train_labels=train['target']
     train = train.drop(['ID','target'],axis=1)
 
-    test=pd.read_csv("../input/test.csv")
+    test=pd.read_csv("./data/test.csv")
     test_id=test['ID']
     test = test.drop(['ID'],axis=1)
 

@@ -13,8 +13,8 @@ import sklearn.metrics
 
 # Load train and test sets
 
-train_file = pd.read_csv('../input/train.csv')
-test_file  = pd.read_csv('../input/test.csv')
+train_file = pd.read_csv('./data/train.csv')
+test_file  = pd.read_csv('./data/test.csv')
 
 num_train = len(train_file)
 

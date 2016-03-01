@@ -15,10 +15,10 @@ xgboost_params = {
 }
 
 print('Load data...')
-train = pd.read_csv("../input/train.csv")
+train = pd.read_csv("./data/train.csv")
 target = train['target']
 train = train.drop(['ID','target'],axis=1)
-test = pd.read_csv("../input/test.csv")
+test = pd.read_csv("./data/test.csv")
 ids = test['ID'].values
 test = test.drop(['ID'],axis=1)
 #

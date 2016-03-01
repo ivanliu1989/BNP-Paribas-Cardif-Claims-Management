@@ -17,8 +17,8 @@ import random
 rnd=57
 maxCategories=20
 
-train=pd.read_csv('../input/train.csv')
-test=pd.read_csv('../input/test.csv')
+train=pd.read_csv('./data/train.csv')
+test=pd.read_csv('./data/test.csv')
 random.seed(rnd)
 train.index=train.ID
 test.index=test.ID

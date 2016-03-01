@@ -13,8 +13,8 @@ def impute_most_freq_value(df,colname):
     return c.index[0]
 
 def load_data():
-    train = pd.read_csv('../input/train.csv')
-    test  = pd.read_csv('../input/test.csv')
+    train = pd.read_csv('./data/train.csv')
+    test  = pd.read_csv('./data/test.csv')
 
     train.drop(['v22', 'v91'], axis=1, inplace=True)
     test.drop(['v22', 'v91'], axis=1, inplace=True)

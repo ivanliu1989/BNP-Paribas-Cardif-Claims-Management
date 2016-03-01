@@ -30,8 +30,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 init_time = time.clock()
 
 # Let's get some data we need
-df_train = pd.read_csv('../input/train.csv', header=0, delimiter=',')
-df_test = pd.read_csv('../input/test.csv', header=0, delimiter=',')
+df_train = pd.read_csv('./data/train.csv', header=0, delimiter=',')
+df_test = pd.read_csv('./data/test.csv', header=0, delimiter=',')
 
 print ("Data loaded.") 
 
