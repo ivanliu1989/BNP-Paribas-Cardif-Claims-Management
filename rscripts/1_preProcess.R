@@ -3,7 +3,7 @@ setwd("/Users/ivanliu/Downloads/Kaggle_BNP")
 rm(list = ls()); gc(reset = TRUE)
 
 train <- fread("./data/train.csv", stringsAsFactors = F, data.table = F, na.strings = "")
-test <- fread("./data/test.csv", stringsAsFactors = F, data.table = F)
+test <- fread("./data/test.csv", stringsAsFactors = F, data.table = F, na.strings = "")
 par(mfcol = c(1,1))
 
 #---------------
@@ -37,22 +37,39 @@ summary(all[, nume])
 Cnt_NA_row <- apply(all, 1, function(x) sum(is.na(x)))
 
 # Imputation
+apply(all[, ordi], 2, function(x) mean(is.na(x))); str(all[,ordi])
+all[, ordi][is.na(all[,ordi])] <- -1
 
+apply(all[, cate], 2, function(x) mean(is.na(x))); str(all[,cate])
+all[, cate][is.na(all[,cate])] <- '_NA'
 
+apply(all[, nume], 2, function(x) mean(is.na(x))); str(all[,nume])
+all[, nume][is.na(all[,nume])] <- -1
+
+apply(all, 2, function(x) mean(is.na(x)))
 
 #------------------------
 # Create New features ---
 #------------------------
 # 1. Counts of NA
-Cnt_NA_row
+all$Cnt_NA_row <- Cnt_NA_row
 
 # 2. Categorical variables: v91 - v107
+table(all$v91); table(all$v107)
+all$v91107 <- paste0(all$v91, all$v107)
+all$v91107[which(all$v91107 == '_NA_NA')] <- '_NA';table(all$v91107)
+all$v91 <- NULL; all$v107 <- NULL
 
 # 3. Categorical variables: v71 - v75
+# table(all[all$target == 1, 'v71']); table(all$v75)
+# all$v7175 <- paste0(all$v71, all$v75)
+# table(all$v7175)
 
 # 4. Categorical variables: v79 - v71
+# table(all$v79); table(all$v71)
 
 # 5. Categorical variables: v10 - v31
+# table(all$v10); table(all$v31)
 
 # 6. Continuous variables
 
