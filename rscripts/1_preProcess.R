@@ -1,5 +1,5 @@
 library(data.table)
-setwd("/Users/ivanliu/Downloads/Kaggle_BNP")
+setwd("C:/Users/iliu2/Documents/Kaggle_BNP/")
 rm(list = ls()); gc(reset = TRUE)
 
 train <- fread("./data/train.csv", stringsAsFactors = F, data.table = F, na.strings = "")
@@ -48,10 +48,10 @@ all[, nume][is.na(all[,nume])] <- -1
 
 apply(all, 2, function(x) mean(is.na(x)))
 
-#------------------------
-# Create New features ---
-#------------------------
-# 1. Counts of NA
+#----------------------------------------
+# Features creation / transformations ---
+#----------------------------------------
+# 1. Counts of NA, 0's, max, min, mean, sd
 all$Cnt_NA_row <- Cnt_NA_row
 
 # 2. Categorical variables: v91 - v107
@@ -73,17 +73,43 @@ all$v91 <- NULL; all$v107 <- NULL
 
 # 6. Continuous variables
 
-# 7. Mean target for category?
+# 7. Hierarchy detect
+#v56, v113, v125, v22
 
-# 8. Dist
+# 8. Bayesian: Encode categorical variables with its ratio of the target variable in train set.
 
-# 9. tsne/kmeans
+# 9. Benford's Law / Log transformation
 
+# 10. One-hot encoding
+cate <- c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91107', 'v110', 'v112', 'v113', 'v125')
+sapply(cate, function(x) length(table(all[,x])))
+dummies <- dummyVars(Response ~ ., data = train[,c(1:127,ncol(train))], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
+train1 <- as.data.frame(predict(dummies, newdata = train[,c(1:127,ncol(train))]))
+test_dum <- as.data.frame(predict(dummies, newdata = test[,c(1:127,ncol(train))]))
+train_dum <- cbind(train1, Response=train$Response)
+# head(train_dum[,names(table(names(train_dum))[table(names(train_dum))==2])])
+zv <- names(table(names(train_dum))[table(names(train_dum))==2])
+train_dum <- train_dum[,-which(names(train_dum) %in% zv)]
+test_dum <- test_dum[,-which(names(test_dum) %in% zv)]
 
-#----------------------------
-# Feature transformations ---
-#----------------------------
+# 11. Dist
+library(caret)
+centroids <- classDist(all[, feature.names], as.factor(total_new[, 'Response']), pca = T, keep = 275) 
+distances <- predict(centroids, total_new[, feature.names])
+distances <- as.data.frame(distances)
+distances_all <- distances[,-1]; names(distances_all) <- paste('DistALL', 1:8, sep = "")
 
+# 12. tsne/kmeans
+library(Rtsne)
+tsne <- Rtsne(as.matrix(total_new[,feature.names]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
+embedding <- as.data.frame(tsne$Y)
+tsne_all <- embedding[,1:3]; names(tsne_all) <- c('TSNE_A1','TSNE_A2','TSNE_A3')
+
+# 13. Genetic programming to automatically create non-linear features
+
+# 14. Recursive Feature Elimination
+
+# 15. Automation
 
 #-----------------
 # Adding noise ---

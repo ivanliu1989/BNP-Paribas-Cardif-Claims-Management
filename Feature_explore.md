@@ -32,3 +32,5 @@ There are also some weird pattern between v22 and v125 ( isolate v22 and v125 an
  
 NN Methods
 with my nn implementation best what I got is 5CV:0.468096 lb:0.46899. Its a 1000(relu)-1000(relu)-1(sigmoid) net with high dropout=0.9 in hidden layers, 110 epochs SGD. nn is very sensitive to data preprocessing, I think there is room for improvement. I use 1-hot for categories and rank trafo for numerics.
+
+v72 is the exact sum of v129 v38 and v62
