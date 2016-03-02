@@ -147,6 +147,15 @@ all[,"v125_1_bayes"]<-data.frame(v125_1_bayes)[all[,"v125_1"], "v125_1_bayes"]
 all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
 
 # 9. Benford's Law / Log transformation
+library('BenfordTests')
+signifd(all[all[,i] >= 0,i])
+chisq.benftest(all[all[,i] >= 0,i])
+# 3,8,9,17,20,21,27,28,34,35,39,41,48,52,56,65
+# 6,10,12,15,18,19,29,45,57,59,62
+str(all, list.len = ncol(all))
+par(mfcol = c(1,2))
+i <- 3; table(all[,i])
+hist(all[all[,i] >= 0,i], breaks = 100); hist(log1p(all[all[,i] >= 0,i]), breaks = 100)
 
 # 10. One-hot encoding
 cate <- c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91107', 'v110', 'v112', 'v113', 'v125')
