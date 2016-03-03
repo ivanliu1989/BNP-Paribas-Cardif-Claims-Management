@@ -15,10 +15,10 @@ test$target <- -1
 all <- rbind(train, test)
 all_naCol <- sapply(names(all[,-c(1,2)]), function(x) mean(is.na(all[,x])))
 
-    # train_naCol <- sapply(names(train[,-c(1,2)]), function(x) mean(is.na(train[,x])))
-    # test_naCol <- sapply(names(train[,-c(1,2)]), function(x) mean(is.na(train[,x])))
-    # plot(train_naCol, col = 'blue')
-    # points(test_naCol, col = 'red')
+# train_naCol <- sapply(names(train[,-c(1,2)]), function(x) mean(is.na(train[,x])))
+# test_naCol <- sapply(names(train[,-c(1,2)]), function(x) mean(is.na(train[,x])))
+# plot(train_naCol, col = 'blue')
+# points(test_naCol, col = 'red')
 
 str(all[,names(all_naCol[all_naCol>0])], list.len = ncol(all))
 str(all[,names(all_naCol[all_naCol==0])], list.len = ncol(all))
@@ -26,30 +26,30 @@ ordi <- c('v38', 'v62', 'v72', 'v129')
 cate <- c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91', 'v107', 'v110', 'v112', 'v113', 'v125')
 nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
 
-    # nume_na_mean <- colMeans(all[,nume], na.rm = T)
-    # ordi_na_mean <- colMeans(all[,ordi], na.rm = T)
+# nume_na_mean <- colMeans(all[,nume], na.rm = T)
+# ordi_na_mean <- colMeans(all[,ordi], na.rm = T)
 
-    # par(mfcol = c(2,2))
-    # # Ordinal
-    # sapply(c('v38', 'v62', 'v72', 'v129'), function(x) plot(table(train[,x]), type = 'h', col = 'blue')) 
-    # # Categorical 
-    # sapply(c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91',
-    #          'v107', 'v110', 'v112', 'v113', 'v125'), function(x) table(train[,x]))
-    # # numerical
-    # summary(all[, nume])
+# par(mfcol = c(2,2))
+# # Ordinal
+# sapply(c('v38', 'v62', 'v72', 'v129'), function(x) plot(table(train[,x]), type = 'h', col = 'blue')) 
+# # Categorical 
+# sapply(c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91',
+#          'v107', 'v110', 'v112', 'v113', 'v125'), function(x) table(train[,x]))
+# # numerical
+# summary(all[, nume])
 
 # Counts of NA
 Cnt_NA_row <- apply(all, 1, function(x) sum(is.na(x)))
 
 # Imputation
 apply(all[, ordi], 2, function(x) mean(is.na(x))); str(all[,ordi])
-all[, ordi][is.na(all[,ordi])] <- -1
+all[, ordi][is.na(all[,ordi])] <- -999
 
 apply(all[, cate], 2, function(x) mean(is.na(x))); str(all[,cate])
 all[, cate][is.na(all[,cate])] <- '_NA'
 
 apply(all[, nume], 2, function(x) mean(is.na(x))); str(all[,nume])
-all[, nume][is.na(all[,nume])] <- -1
+all[, nume][is.na(all[,nume])] <- -999
 
 apply(all, 2, function(x) mean(is.na(x)))
 
@@ -66,18 +66,18 @@ all$v91107 <- paste0(all$v91, all$v107)
 all$v91107[which(all$v91107 == '_NA_NA')] <- '_NA';table(all$v91107)
 all$v91 <- NULL; all$v107 <- NULL
 
-    # 3. Categorical variables: v71 - v75
-    # table(all[all$target == 1, 'v71']); table(all$v75)
-    # all$v7175 <- paste0(all$v71, all$v75)
-    # table(all$v7175)
-    
-    # 4. Categorical variables: v79 - v71
-    # table(all$v79); table(all$v71)
-    
-    # 5. Categorical variables: v10 - v31
-    # table(all$v10); table(all$v31)
-    
-    # 6. Continuous variables
+# 3. Categorical variables: v71 - v75
+# table(all[all$target == 1, 'v71']); table(all$v75)
+# all$v7175 <- paste0(all$v71, all$v75)
+# table(all$v7175)
+
+# 4. Categorical variables: v79 - v71
+# table(all$v79); table(all$v71)
+
+# 5. Categorical variables: v10 - v31
+# table(all$v10); table(all$v31)
+
+# 6. Continuous variables
 
 # 7. Hierarchy detect
 # v56, v113, v125, v22
@@ -147,21 +147,28 @@ all[,"v125_1_bayes"]<-data.frame(v125_1_bayes)[all[,"v125_1"], "v125_1_bayes"]
 all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
 
 # 9. Benford's Law / Log transformation
-library('BenfordTests')
-signifd(all[all[,i] >= 0,i])
-chisq.benftest(all[all[,i] >= 0,i])
+# library('BenfordTests')
+# for(i in 3:ncol(train)){
+#     if(class(all[all[,i] >= 0,i])=='numeric'){
+#         sc <- chisq.benftest(all[all[,i] >= 0,i])
+#         if(sc$p.value >= 0.05){
+#             print(sc)
+#             hist(signifd(all[all[,i] >= 0,i]), col = 'red');
+#         }else{
+#             cat(sc$p.value)
+#             hist(signifd(all[all[,i] >= 0,i]), col = 'blue');
+#         }
+#     }
+# }
 # 3,8,9,17,20,21,27,28,34,35,39,41,48,52,56,65
 # 6,10,12,15,18,19,29,45,57,59,62
-str(all, list.len = ncol(all))
-par(mfcol = c(1,2))
-i <- 3; table(all[,i])
-hist(all[all[,i] >= 0,i], breaks = 100); hist(log1p(all[all[,i] >= 0,i]), breaks = 100)
 
 # 10. One-hot encoding
-cate <- c('v3', 'v22', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91107', 'v110', 'v112', 'v113', 'v125')
-sapply(cate, function(x) length(table(all[,x])))
-dummies <- dummyVars(Response ~ ., data = train[,c(1:127,ncol(train))], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
-train1 <- as.data.frame(predict(dummies, newdata = train[,c(1:127,ncol(train))]))
+library(caret)
+cate <- names(sapply(all, class)[sapply(all, class) == 'character']); head(all[,c('target',cate[-2])])
+# sapply(cate, function(x) length(table(all[,x])))
+dummies <- dummyVars(target ~ ., data = all[,c('target',cate)], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
+train1 <- as.data.frame(predict(dummies, newdata = all))
 test_dum <- as.data.frame(predict(dummies, newdata = test[,c(1:127,ncol(train))]))
 train_dum <- cbind(train1, Response=train$Response)
 # head(train_dum[,names(table(names(train_dum))[table(names(train_dum))==2])])
