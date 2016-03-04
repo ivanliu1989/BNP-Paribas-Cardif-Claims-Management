@@ -166,34 +166,52 @@ all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
 # 10. One-hot encoding
 library(caret)
 cate <- names(sapply(all, class)[sapply(all, class) == 'character']); head(all[,c('target',cate[-2])])
-# sapply(cate, function(x) length(table(all[,x])))
-dummies <- dummyVars(target ~ ., data = all[,c('target',cate)], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
-train1 <- as.data.frame(predict(dummies, newdata = all))
-test_dum <- as.data.frame(predict(dummies, newdata = test[,c(1:127,ncol(train))]))
-train_dum <- cbind(train1, Response=train$Response)
-# head(train_dum[,names(table(names(train_dum))[table(names(train_dum))==2])])
-zv <- names(table(names(train_dum))[table(names(train_dum))==2])
-train_dum <- train_dum[,-which(names(train_dum) %in% zv)]
-test_dum <- test_dum[,-which(names(test_dum) %in% zv)]
+sapply(cate[-2], function(x) length(table(all[,x])))
+
+for(c in cate[-2]){
+    all[,c] <- as.factor(all[,c])
+}
+dummies <- dummyVars(target ~ ., data = all[,c('target',cate[-2])], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
+all_dum <- as.data.frame(predict(dummies, newdata = all[,c('target',cate[-2])]))
+all_dum <- cbind(all[,!names(all) %in% cate[-2]], all_dum)
+
 
 # 11. Dist
-library(caret)
-centroids <- classDist(all[, feature.names], as.factor(total_new[, 'Response']), pca = T, keep = 275) 
-distances <- predict(centroids, total_new[, feature.names])
+library(caret) # v22
+train_dum <- all_dum[all_dum$target>=0, ]
+test_dum <- all_dum[all_dum$target<0, ]
+centroids <- classDist(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')], as.factor(all_dum[, 'target']),pca = T, keep = 390) # 380
+distances <- predict(centroids, all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')])
 distances <- as.data.frame(distances)
-distances_all <- distances[,-1]; names(distances_all) <- paste('DistALL', 1:8, sep = "")
+distances_all <- distances[,-1]; names(distances_all) <- paste('DistALL', 1:2, sep = "")
 
 # 12. tsne/kmeans
 library(Rtsne)
-tsne <- Rtsne(as.matrix(total_new[,feature.names]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
+tsne <- Rtsne(as.matrix(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
 embedding <- as.data.frame(tsne$Y)
 tsne_all <- embedding[,1:3]; names(tsne_all) <- c('TSNE_A1','TSNE_A2','TSNE_A3')
 
-# 13. Genetic programming to automatically create non-linear features
+# 13. factorize
+az_to_int <- function(az) {
+    xx <- strsplit(tolower(az), "")[[1]]
+    pos <- match(xx, letters[(1:26)]) 
+    result <- sum( pos* 26^rev(seq_along(xx)-1))
+    return(result)
+}
 
-# 14. Recursive Feature Elimination
+all_dum$v22<-sapply(all_dum$v22, az_to_int)
 
-# 15. Automation
+# 14. Genetic programming to automatically create non-linear features
+
+# 15. Recursive Feature Elimination
+
+# 16. Automation
+
+# 17. AUC / Mean
+
+# 18. Merge
+all_dum <- cbind(all_dum, distances_all, tsne_all)
+save(distance_all, tsne_all, file = './BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
 
 #-----------------
 # Adding noise ---
