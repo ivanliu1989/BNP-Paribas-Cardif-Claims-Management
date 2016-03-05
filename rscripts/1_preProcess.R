@@ -164,32 +164,32 @@ all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
 # 6,10,12,15,18,19,29,45,57,59,62
 
 # 10. One-hot encoding
-library(caret)
-cate <- names(sapply(all, class)[sapply(all, class) == 'character']); head(all[,c('target',cate[-2])])
-sapply(cate[-2], function(x) length(table(all[,x])))
+# library(caret)
+# cate <- names(sapply(all, class)[sapply(all, class) == 'character']); head(all[,c('target',cate[-2])])
+# sapply(cate[-2], function(x) length(table(all[,x])))
+# 
+# for(c in cate[-2]){
+#     all[,c] <- as.factor(all[,c])
+# }
+# dummies <- dummyVars(target ~ ., data = all[,c('target',cate[-2])], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
+# all_dum <- as.data.frame(predict(dummies, newdata = all[,c('target',cate[-2])]))
+# all_dum <- cbind(all[,!names(all) %in% cate[-2]], all_dum)
 
-for(c in cate[-2]){
-    all[,c] <- as.factor(all[,c])
-}
-dummies <- dummyVars(target ~ ., data = all[,c('target',cate[-2])], sep = "_", levelsOnly = FALSE, fullRank = TRUE)
-all_dum <- as.data.frame(predict(dummies, newdata = all[,c('target',cate[-2])]))
-all_dum <- cbind(all[,!names(all) %in% cate[-2]], all_dum)
-
-
+load('./BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
 # 11. Dist
-library(caret) # v22
-train_dum <- all_dum[all_dum$target>=0, ]
-test_dum <- all_dum[all_dum$target<0, ]
-centroids <- classDist(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')], as.factor(all_dum[, 'target']),pca = T, keep = 390) # 380
-distances <- predict(centroids, all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')])
-distances <- as.data.frame(distances)
-distances_all <- distances[,-1]; names(distances_all) <- paste('DistALL', 1:2, sep = "")
+# library(caret) # v22
+# train_dum <- all_dum[all_dum$target>=0, ]
+# test_dum <- all_dum[all_dum$target<0, ]
+# centroids <- classDist(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')], as.factor(all_dum[, 'target']),pca = T, keep = 390) # 380
+# distances <- predict(centroids, all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')])
+# distances <- as.data.frame(distances)
+# distances_all <- distances[,-1]; names(distances_all) <- paste('DistALL', 1:2, sep = "")
 
 # 12. tsne/kmeans
-library(Rtsne)
-tsne <- Rtsne(as.matrix(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
-embedding <- as.data.frame(tsne$Y)
-tsne_all <- embedding[,1:3]; names(tsne_all) <- c('TSNE_A1','TSNE_A2','TSNE_A3')
+# library(Rtsne)
+# tsne <- Rtsne(as.matrix(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
+# embedding <- as.data.frame(tsne$Y)
+# tsne_all <- embedding[,1:3]; names(tsne_all) <- c('TSNE_A1','TSNE_A2','TSNE_A3')
 
 # 13. factorize
 az_to_int <- function(az) {
@@ -199,7 +199,14 @@ az_to_int <- function(az) {
     return(result)
 }
 
-all_dum$v22<-sapply(all_dum$v22, az_to_int)
+for(f in cate){
+    all[,f]<-sapply(all[,f], az_to_int)
+}
+head(all[,cate])
+
+apply(all[, cate], 2, function(x) mean(is.na(x))); str(all[,cate])
+all[, cate][is.na(all[,cate])] <- -999
+head(all[,cate])
 
 # 14. Genetic programming to automatically create non-linear features
 
@@ -210,8 +217,10 @@ all_dum$v22<-sapply(all_dum$v22, az_to_int)
 # 17. AUC / Mean
 
 # 18. Merge
-all_dum <- cbind(all_dum, distances_all, tsne_all)
-save(distance_all, tsne_all, file = './BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
+all_comp <- cbind(all, distances_all, tsne_all)
+dim(all_comp); head(all_comp)
+# save(distances_all, tsne_all, file = './BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
+
 
 #-----------------
 # Adding noise ---
@@ -221,3 +230,6 @@ save(distance_all, tsne_all, file = './BNP-Paribas-Cardif-Claims-Management/meta
 #----------
 # Split ---
 #----------
+train <- all_comp[all_comp$target >= 0, ]
+test <- all_comp[all_comp$target < 0, ]
+save(train, test, file = './data/train_test_20160305.RData')
