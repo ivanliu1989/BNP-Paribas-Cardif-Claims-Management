@@ -6,7 +6,7 @@ load('./data/train_test_20160305.RData')
 
 ### Split Data ###
 set.seed(23)
-cv <- 5
+cv <- 10
 folds <- createFolds(train$target, k = cv, list = FALSE)
 dropitems <- c('ID','target')
 feature.names <- names(train)[!names(train) %in% dropitems] 
@@ -45,11 +45,22 @@ for(i in 1:cv){
                      min_child_weight    = mcw,
                      subsample           = ss,
                      colsample           = cs,
-                     print.every.n       = 10
+                     print.every.n       = 200
     )
     
     ### Make predictions
     cat(paste0('Iteration: ', i, ' || Score: ', clf$bestScore))
+    # 0.463547
+    # 0.456657
+    # 0.457595
+    # 0.454999
+    # 0.459592
+    
+    # 0.465319
+    # 0.457349
+    # 0.458969
+    # 0.456499
+    # 0.461414
 }
 
 # For test data
