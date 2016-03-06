@@ -8,7 +8,7 @@ load('./data/train_test_20160305.RData')
 set.seed(23)
 cv <- 10
 folds <- createFolds(train$target, k = cv, list = FALSE)
-dropitems <- c('ID','target')
+dropitems <- c('ID','target','TSNE_A1','TSNE_A2','TSNE_A3')
 feature.names <- names(train)[!names(train) %in% dropitems] 
 # sc <- preProcess(train[,feature.names],method = c('center', 'scale'))
 # train <- cbind(ID = train$ID, predict(sc, train[,feature.names]), target = train$target)
@@ -50,17 +50,6 @@ for(i in 1:cv){
     
     ### Make predictions
     cat(paste0('Iteration: ', i, ' || Score: ', clf$bestScore))
-    # 0.463547
-    # 0.456657
-    # 0.457595
-    # 0.454999
-    # 0.459592
-    
-    # 0.465319
-    # 0.457349
-    # 0.458969
-    # 0.456499
-    # 0.461414
 }
 
 # For test data
