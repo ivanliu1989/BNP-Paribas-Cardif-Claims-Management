@@ -3,7 +3,8 @@ library(xgboost)
 library(caret)
 rm(list=ls());gc()
 load('./data/train_test_20160305.RData')
-
+load('./BNP-Paribas-Cardif-Claims-Management/meta data/na_meta_data_20160307.RData')
+ls()
 ### Split Data ###
 set.seed(23)
 cv <- 10
@@ -25,11 +26,14 @@ mcw <- 1
 ss <- 0.96
 cs <- 0.45
 
+na_feat <- data.frame(km_cluster_all=km_cluster_all, km_cluster_tsne=km_cluster_tsne, tsne_na)
+train_na_feat <- all[1:nrow(train),]
 ### Start Training ###
 for(i in 1:cv){
     f <- folds==i
-    dval          <- xgb.DMatrix(data=data.matrix(train[f,feature.names]),label=train[f,'target'])
-    dtrain        <- xgb.DMatrix(data=data.matrix(train[!f,feature.names]),label=train[!f,'target']) 
+    # km_cluster_all, km_cluster_tsne, tsne_na
+    dval          <- xgb.DMatrix(data=data.matrix(train_na_feat[f,]),label=train[f,'target'])
+    dtrain        <- xgb.DMatrix(data=data.matrix(train_na_feat[!f,]),label=train[!f,'target']) 
     watchlist     <- list(val=dval,train=dtrain)
     
     clf <- xgb.train(data                = dtrain,
@@ -51,29 +55,3 @@ for(i in 1:cv){
     ### Make predictions
     cat(paste0('Iteration: ', i, ' || Score: ', clf$bestScore))
 }
-
-# For test data
-dtest          <- xgb.DMatrix(data=data.matrix(test[,feature.names]),label=test[,'target'])
-dtrain        <- xgb.DMatrix(data=data.matrix(train[,feature.names]),label=train[,'target']) 
-watchlist     <- list(val=dtrain,train=dtrain)
-
-clf <- xgb.train(data                = dtrain,
-                 nrounds             = nr, 
-                 early.stop.round    = sr,
-                 watchlist           = watchlist,
-                 eval_metric         = 'logloss',
-                 maximize            = FALSE,
-                 objective           = "binary:logistic",
-                 booster             = "gbtree",
-                 eta                 = sp,
-                 max_depth           = md,
-                 min_child_weight    = mcw,
-                 subsample           = ss,
-                 colsample           = cs,
-                 print.every.n       = 10
-)
-
-### Make predictions
-validPreds <- predict(clf, dtest)
-prediction <- cbind(ID = test[,'ID'], target = validPreds)
-write(prediction, file = './submissions/single_xgb_20150305_1.csv')

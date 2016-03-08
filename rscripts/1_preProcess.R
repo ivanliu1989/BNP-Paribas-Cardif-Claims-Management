@@ -187,7 +187,7 @@ load('./BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData'
 
 # 12. tsne/kmeans
 # library(Rtsne)
-# tsne <- Rtsne(as.matrix(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
+# tsne <- Rtsne(data.matrix(all_dum[, !names(all_dum) %in% c('ID', 'target', 'v22')]), dims = 3, perplexity=30, check_duplicates = F, pca = F, theta=0.5) #max_iter = 300, 
 # embedding <- as.data.frame(tsne$Y)
 # tsne_all <- embedding[,1:3]; names(tsne_all) <- c('TSNE_A1','TSNE_A2','TSNE_A3')
 
