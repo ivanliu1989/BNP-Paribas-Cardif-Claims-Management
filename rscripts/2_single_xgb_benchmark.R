@@ -2,13 +2,13 @@ setwd('/Users/ivanliu/Downloads/Kaggle_BNP')
 library(xgboost)
 library(caret)
 rm(list=ls());gc()
-load('./data/train_test_20160305.RData')
+load('./data/train_test_20160308.RData')
 
 ### Split Data ###
 set.seed(23)
 cv <- 10
 folds <- createFolds(train$target, k = cv, list = FALSE)
-dropitems <- c('ID','target','TSNE_A1','TSNE_A2','TSNE_A3', 'DistALL1', 'DistALL2')
+dropitems <- c('ID','target')#,'TSNE_A1','TSNE_A2','TSNE_A3', 'DistALL1', 'DistALL2')
 feature.names <- names(train)[!names(train) %in% dropitems] 
 # sc <- preProcess(train[,feature.names],method = c('center', 'scale'))
 # train <- cbind(ID = train$ID, predict(sc, train[,feature.names]), target = train$target)

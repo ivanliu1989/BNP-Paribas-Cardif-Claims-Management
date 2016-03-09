@@ -55,3 +55,9 @@ for(i in 1:cv){
     ### Make predictions
     cat(paste0('Iteration: ', i, ' || Score: ', clf$bestScore))
 }
+
+all <- rbind(train,test)
+all <- cbind(all, tsne_na)
+train <- all[all$target>=0,]
+test <- all[all$target<0,]
+save(train, test, file = './data/train_test_20160308.RData')
