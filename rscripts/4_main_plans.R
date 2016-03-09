@@ -22,16 +22,27 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     head(all[,cate])
     
     cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.4619718
+    
+# 1.    0s counts
+    N <- ncol(all)-2
+    Cnt_NA_row <- apply(all, 1, function(x) sum(is.na(x))/N)
+    Cnt_0_row <- apply(all, 1, function(x) sum(x==0, na.rm = T)/N)
+    all$Cnt_NA_row <- Cnt_NA_row
+    all$Cnt_0_row <- Cnt_0_row
 
-# 1.    Bayesian enconding
+    cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 
+    
+# 2.    Imputation    
+        
+# 3.    Bayesian enconding
 
-# 2.    Dist/tSNE
+# 4.    Dist/tSNE
 
-# 3.    0s counts
+# 5.    Test effectiveness of hierarchies
 
-# 4.    Test effectiveness of hierarchies
-
-# 5.    Remove small categories
+# 6.    Remove small categories
     # v22, v56
     # v47, v71, v79, v113
     dim(table(train[-which(train$v22 %in% unique(test$v22)),'v22']))
@@ -40,19 +51,19 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     table(train[-which(train$v56 %in% unique(test$v56)),'v56'])
     table(test[-which(test$v56 %in% unique(train$v56)),'v56'])
 
-# 6.    Find high correlations
+# 7.    Find high correlations
 
-# 7.    Zero variance
+# 8.    Zero variance
 
-# 8.    Kmeans separation to find NA patterns
+# 9.    Kmeans separation to find NA patterns
 
-# 9.    One hot encoding
+# 10.    One hot encoding
 
-# 10.   Scale
+# 11.   Scale
 
-# 11.   Imputation for non-systematic variables
+# 12.   Imputation for non-systematic variables
 
-# 12.   Feature importance detection
+# 13.   Feature importance detection
 
     
     
