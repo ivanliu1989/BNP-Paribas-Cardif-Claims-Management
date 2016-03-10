@@ -32,7 +32,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all$Cnt_NA_row <- Cnt_NA_row
     all$Cnt_0_row <- Cnt_0_row
     
-    # cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # cv_score_1 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
     # plot(all[all$target >= 0, c('target','Cnt_0_row')])
     # 0.4617784
 
@@ -42,7 +42,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all[, -c(1,2)][is.na(all[,-c(1,2)])] <- -999
     apply(all, 2, function(x) mean(is.na(x)))
     
-    # cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # cv_score_2 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
     # 
     
 # 2.5    Categorical variables: v91 - v107
@@ -52,7 +52,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all$v91 <- NULL; all$v107 <- NULL
     all$v91107 <- as.numeric(all$v91107) 
     
-    cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    cv_score_2.5 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
     #
     
 # 3.    Test effectiveness of hierarchies
@@ -88,7 +88,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     
     all <- cbind(all, v22,v56,v113,v125)
     
-    cv_score <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    cv_score_3 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
     #
     
 # 4.    Dist/tSNE
