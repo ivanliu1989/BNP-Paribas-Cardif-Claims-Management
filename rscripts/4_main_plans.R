@@ -134,18 +134,35 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     for(i in 1:length(names(v125_1_bayes))){all[all$v125_1 == as.numeric(names(v125_1_bayes)[i]),"v125_1_bayes"] <- v125_1_bayes[[i]]}
     for(i in 1:length(names(v125_2_bayes))){all[all$v125_2 == as.numeric(names(v125_2_bayes)[i]),"v125_2_bayes"] <- v125_2_bayes[[i]]}
     
-    cv_score_5 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # cv_score_5 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
     # 
     
 # 6.    Remove small categories
-# v22, v56
-# v47, v71, v79, v113
-dim(table(train[-which(train$v22 %in% unique(test$v22)),'v22']))
-dim(table(test[-which(test$v22 %in% unique(train$v22)),'v22']))
+    train <- all[all$target >= 0,]
+    test <- all[all$target < 0,]
+    dim(train); dim(test)
+    # v22, v56
+    # v47, v71, v79, v113
+    # dim(table(train[-which(train$v22 %in% unique(test$v22)),'v22']))
+    # dim(table(test[-which(test$v22 %in% unique(train$v22)),'v22']))
+    
+    v22_sm_cat <- as.numeric(c(names(table(train[-which(train$v22 %in% unique(test$v22)),'v22'])), names(table(test[-which(test$v22 %in% unique(train$v22)),'v22']))))
+    v56_sm_cat <- as.numeric(c(names(table(train[-which(train$v56 %in% unique(test$v56)),'v56'])), names(table(test[-which(test$v56 %in% unique(train$v56)),'v56']))))
+    v47_sm_cat <- as.numeric(c(names(table(train[-which(train$v47 %in% unique(test$v47)),'v47'])), names(table(test[-which(test$v47 %in% unique(train$v47)),'v47']))))
+    v71_sm_cat <- as.numeric(c(names(table(train[-which(train$v71 %in% unique(test$v71)),'v71'])), names(table(test[-which(test$v71 %in% unique(train$v71)),'v71']))))
+    v79_sm_cat <- as.numeric(c(names(table(train[-which(train$v79 %in% unique(test$v79)),'v79'])), names(table(test[-which(test$v79 %in% unique(train$v79)),'v79']))))
+    v113_sm_cat <- as.numeric(c(names(table(train[-which(train$v113 %in% unique(test$v113)),'v113'])), names(table(test[-which(test$v113 %in% unique(train$v113)),'v113']))))
+    
+    all[all$v22 %in% v22_sm_cat, 'v22'] <- -999
+    all[all$v56 %in% v56_sm_cat, 'v56'] <- -999
+    all[all$v47 %in% v47_sm_cat, 'v47'] <- -999
+    all[all$v71 %in% v71_sm_cat, 'v71'] <- -999
+    all[all$v79 %in% v79_sm_cat, 'v79'] <- -999
+    all[all$v113 %in% v113_sm_cat, 'v113'] <- -999
 
-table(train[-which(train$v56 %in% unique(test$v56)),'v56'])
-table(test[-which(test$v56 %in% unique(train$v56)),'v56'])
-
+    # cv_score_6 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 
+    
 # 7.    Find high correlations
 
 # 8.    Zero variance
