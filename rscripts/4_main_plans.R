@@ -95,8 +95,8 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     load('./BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
     all <- cbind(all, distances_all, tsne_all)
     
-    cv_score_4 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # cv_score_4 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.4599826
     
 # 5.    Bayesian encoding
     all_bayesian <- all[all$target >= 0, ]
@@ -119,21 +119,23 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     v125_2_bayes <- sapply(names(table(all_bayesian$v125_2)), function(x) mean(all_bayesian[all_bayesian$v125_2 == x, 'target']))
     
     all[,"v24_bayes"]<-data.frame(v24_bayes)[all[,"v24"], "v24_bayes"]
-    all[,"v30_bayes"]<-data.frame(v30_bayes)[all[,"v30"], "v30_bayes"]
-    all[,"v31_bayes"]<-data.frame(v31_bayes)[all[,"v31"], "v31_bayes"]
-    all[,"v52_bayes"]<-data.frame(v52_bayes)[all[,"v52"], "v52_bayes"]
-    all[,"v66_bayes"]<-data.frame(v66_bayes)[all[,"v66"], "v66_bayes"]
-    all[,"v91107_bayes"]<-data.frame(v91107_bayes)[all[,"v91107"], "v91107_bayes"]
-    all[,"v110_bayes"]<-data.frame(v110_bayes)[all[,"v110"], "v110_bayes"]
-    all[,"v112_bayes"]<-data.frame(v112_bayes)[all[,"v112"], "v112_bayes"]
-    all[,"v125_bayes"]<-data.frame(v125_bayes)[all[,"v125"], "v125_bayes"]
-    all[,"v22_1_bayes"]<-data.frame(v22_1_bayes)[all[,"v22_1"], "v22_1_bayes"]
-    all[,"v22_2_bayes"]<-data.frame(v22_2_bayes)[all[,"v22_2"], "v22_2_bayes"]
-    all[,"v22_3_bayes"]<-data.frame(v22_3_bayes)[all[,"v22_3"], "v22_3_bayes"]
-    all[,"v22_4_bayes"]<-data.frame(v22_4_bayes)[all[,"v22_4"], "v22_4_bayes"]
-    all[,"v125_1_bayes"]<-data.frame(v125_1_bayes)[all[,"v125_1"], "v125_1_bayes"]
-    all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
+    for(i in 1:length(names(v30_bayes))){all[all$v30 == as.numeric(names(v30_bayes)[i]),"v30_bayes"] <- v30_bayes[[i]]}
+    for(i in 1:length(names(v31_bayes))){all[all$v31 == as.numeric(names(v31_bayes)[i]),"v31_bayes"] <- v31_bayes[[i]]}
+    for(i in 1:length(names(v52_bayes))){all[all$v52 == as.numeric(names(v52_bayes)[i]),"v52_bayes"] <- v52_bayes[[i]]}
+    for(i in 1:length(names(v66_bayes))){all[all$v66 == as.numeric(names(v66_bayes)[i]),"v66_bayes"] <- v66_bayes[[i]]}
+    for(i in 1:length(names(v91107_bayes))){all[all$v91107 == as.numeric(names(v91107_bayes)[i]),"v91107_bayes"] <- v91107_bayes[[i]]}
+    for(i in 1:length(names(v110_bayes))){all[all$v110 == as.numeric(names(v110_bayes)[i]),"v110_bayes"] <- v110_bayes[[i]]}
+    for(i in 1:length(names(v112_bayes))){all[all$v112 == as.numeric(names(v112_bayes)[i]),"v112_bayes"] <- v112_bayes[[i]]}
+    for(i in 1:length(names(v125_bayes))){all[all$v125 == as.numeric(names(v125_bayes)[i]),"v125_bayes"] <- v125_bayes[[i]]}
+    for(i in 1:length(names(v22_1_bayes))){all[all$v22_1 == as.numeric(names(v22_1_bayes)[i]),"v22_1_bayes"] <- v22_1_bayes[[i]]}
+    for(i in 1:length(names(v22_2_bayes))){all[all$v22_2 == as.numeric(names(v22_2_bayes)[i]),"v22_2_bayes"] <- v22_2_bayes[[i]]}
+    for(i in 1:length(names(v22_3_bayes))){all[all$v22_3 == as.numeric(names(v22_3_bayes)[i]),"v22_3_bayes"] <- v22_3_bayes[[i]]}
+    for(i in 1:length(names(v22_4_bayes))){all[all$v22_4 == as.numeric(names(v22_4_bayes)[i]),"v22_4_bayes"] <- v22_4_bayes[[i]]}
+    for(i in 1:length(names(v125_1_bayes))){all[all$v125_1 == as.numeric(names(v125_1_bayes)[i]),"v125_1_bayes"] <- v125_1_bayes[[i]]}
+    for(i in 1:length(names(v125_2_bayes))){all[all$v125_2 == as.numeric(names(v125_2_bayes)[i]),"v125_2_bayes"] <- v125_2_bayes[[i]]}
     
+    cv_score_5 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 
     
 # 6.    Remove small categories
 # v22, v56
