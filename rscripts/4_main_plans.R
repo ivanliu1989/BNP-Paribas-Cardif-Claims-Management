@@ -135,7 +135,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     for(i in 1:length(names(v125_2_bayes))){all[all$v125_2 == as.numeric(names(v125_2_bayes)[i]),"v125_2_bayes"] <- v125_2_bayes[[i]]}
     
     # cv_score_5 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # 0.4586156
     
 # 6.    Remove small categories
     train <- all[all$target >= 0,]
@@ -161,7 +161,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all[all$v113 %in% v113_sm_cat, 'v113'] <- -999
 
     # cv_score_6 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # 0.458649
     
 # 7.    Find high correlations
 
