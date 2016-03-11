@@ -164,7 +164,17 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     # 0.458649
     
 # 7.    Find high correlations
-
+    descrCor <- cor(all)
+    summary(descrCor[upper.tri(descrCor)])
+    
+    highlyCorDescr <- findCorrelation(descrCor, cutoff = .99)
+    filteredDescr <- all[,-highlyCorDescr]
+    descrCor2 <- cor(filteredDescr)
+    summary(descrCor2[upper.tri(descrCor2)])
+    
+    cv_score_7 <- doXGB(train = filteredDescr[filteredDescr$target >= 0,], preproc = FALSE, cv = 5)
+    # 
+    
 # 8.    Zero variance
 
 # 9.    Kmeans separation to find NA patterns
