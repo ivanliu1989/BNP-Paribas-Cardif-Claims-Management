@@ -92,9 +92,49 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     # 0.4616048
     
 # 4.    Dist/tSNE
-
-# 5.    Bayesian enconding
-
+    load('./BNP-Paribas-Cardif-Claims-Management/meta data/meta_data_20160305.RData')
+    all <- cbind(all, distances_all, tsne_all)
+    
+    cv_score_4 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 
+    
+# 5.    Bayesian encoding
+    all_bayesian <- all[all$target >= 0, ]
+    dim(train); dim(all_bayesian)
+    
+    v24_bayes <- sapply(names(table(all_bayesian$v24)), function(x) mean(all_bayesian[all_bayesian$v24 == x, 'target']))
+    v30_bayes <- sapply(names(table(all_bayesian$v30)), function(x) mean(all_bayesian[all_bayesian$v30 == x, 'target']))
+    v31_bayes <- sapply(names(table(all_bayesian$v31)), function(x) mean(all_bayesian[all_bayesian$v31 == x, 'target']))
+    v52_bayes <- sapply(names(table(all_bayesian$v52)), function(x) mean(all_bayesian[all_bayesian$v52 == x, 'target']))
+    v66_bayes <- sapply(names(table(all_bayesian$v66)), function(x) mean(all_bayesian[all_bayesian$v66 == x, 'target']))
+    v91107_bayes <- sapply(names(table(all_bayesian$v91107)), function(x) mean(all_bayesian[all_bayesian$v91107 == x, 'target']))
+    v110_bayes <- sapply(names(table(all_bayesian$v110)), function(x) mean(all_bayesian[all_bayesian$v110 == x, 'target']))
+    v112_bayes <- sapply(names(table(all_bayesian$v112)), function(x) mean(all_bayesian[all_bayesian$v112 == x, 'target']))
+    v125_bayes <- sapply(names(table(all_bayesian$v125)), function(x) mean(all_bayesian[all_bayesian$v125 == x, 'target']))
+    v22_1_bayes <- sapply(names(table(all_bayesian$v22_1)), function(x) mean(all_bayesian[all_bayesian$v22_1 == x, 'target']))
+    v22_2_bayes <- sapply(names(table(all_bayesian$v22_2)), function(x) mean(all_bayesian[all_bayesian$v22_2 == x, 'target']))
+    v22_3_bayes <- sapply(names(table(all_bayesian$v22_3)), function(x) mean(all_bayesian[all_bayesian$v22_3 == x, 'target']))
+    v22_4_bayes <- sapply(names(table(all_bayesian$v22_4)), function(x) mean(all_bayesian[all_bayesian$v22_4 == x, 'target']))
+    v125_1_bayes <- sapply(names(table(all_bayesian$v125_1)), function(x) mean(all_bayesian[all_bayesian$v125_1 == x, 'target']))
+    v125_2_bayes <- sapply(names(table(all_bayesian$v125_2)), function(x) mean(all_bayesian[all_bayesian$v125_2 == x, 'target']))
+    
+    all[,"v24_bayes"]<-data.frame(v24_bayes)[all[,"v24"], "v24_bayes"]
+    all[,"v30_bayes"]<-data.frame(v30_bayes)[all[,"v30"], "v30_bayes"]
+    all[,"v31_bayes"]<-data.frame(v31_bayes)[all[,"v31"], "v31_bayes"]
+    all[,"v52_bayes"]<-data.frame(v52_bayes)[all[,"v52"], "v52_bayes"]
+    all[,"v66_bayes"]<-data.frame(v66_bayes)[all[,"v66"], "v66_bayes"]
+    all[,"v91107_bayes"]<-data.frame(v91107_bayes)[all[,"v91107"], "v91107_bayes"]
+    all[,"v110_bayes"]<-data.frame(v110_bayes)[all[,"v110"], "v110_bayes"]
+    all[,"v112_bayes"]<-data.frame(v112_bayes)[all[,"v112"], "v112_bayes"]
+    all[,"v125_bayes"]<-data.frame(v125_bayes)[all[,"v125"], "v125_bayes"]
+    all[,"v22_1_bayes"]<-data.frame(v22_1_bayes)[all[,"v22_1"], "v22_1_bayes"]
+    all[,"v22_2_bayes"]<-data.frame(v22_2_bayes)[all[,"v22_2"], "v22_2_bayes"]
+    all[,"v22_3_bayes"]<-data.frame(v22_3_bayes)[all[,"v22_3"], "v22_3_bayes"]
+    all[,"v22_4_bayes"]<-data.frame(v22_4_bayes)[all[,"v22_4"], "v22_4_bayes"]
+    all[,"v125_1_bayes"]<-data.frame(v125_1_bayes)[all[,"v125_1"], "v125_1_bayes"]
+    all[,"v125_2_bayes"]<-data.frame(v125_2_bayes)[all[,"v125_2"], "v125_2_bayes"]
+    
+    
 # 6.    Remove small categories
 # v22, v56
 # v47, v71, v79, v113
