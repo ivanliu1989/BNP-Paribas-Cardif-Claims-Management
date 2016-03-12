@@ -172,20 +172,56 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     descrCor2 <- cor(filteredDescr)
     summary(descrCor2[upper.tri(descrCor2)])
     
-    cv_score_7 <- doXGB(train = filteredDescr[filteredDescr$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # cv_score_7 <- doXGB(train = filteredDescr[filteredDescr$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.459259 
     
 # 8.    Zero variance
-
+    nzv <- nearZeroVar(all, saveMetrics= TRUE)
+    nzv[nzv$nzv,][1:10,]
+    nzv <- nearZeroVar(all)
+    filteredDescr <- all[, -nzv]
+    dim(filteredDescr)
+    
+    # cv_score_8 <- doXGB(train = filteredDescr[filteredDescr$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.458745
+    
 # 9.    Kmeans separation to find NA patterns
-
+    load('./BNP-Paribas-Cardif-Claims-Management/meta data/na_meta_data_20160307.RData')
+    all <- cbind(all, km_cluster_all = km_cluster_all, km_cluster_tsne = km_cluster_tsne, tsne_na)
+    
+    # cv_score_9 <- doXGB(train = all[all$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.4587074
+    
 # 10.   One hot encoding
-
+    cate <- c('v3', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91107', 'v110', 'v112', 'v113', 'v125',
+              'v22_1', 'v22_2', 'v22_3', 'v22_4', 'v56_1', 'v56_2', 'v113_1', 'v113_2', 'v125_1', 'v125_2', 'km_cluster_all', 'km_cluster_tsne')
+    # v22
+    sapply(cate, function(x) length(table(all[,x])))
+    for(c in cate){all[,c] <- as.factor(all[,c])}; str(all)
+    dummies <- dummyVars(target ~ ., data = all, sep = "_", levelsOnly = FALSE, fullRank = TRUE)
+    all1 <- as.data.frame(predict(dummies, newdata = all))
+    all1 <- cbind(all1, target = all$target)
+    
+    # cv_score_10 <- doXGB(train = all1[all1$target >= 0,], preproc = FALSE, cv = 5)
+    # 0.458353
+    
 # 11.   Scale
+    dropitems <- c('ID', 'target')
+    feature.names <- names(all1)[!names(all1) %in% dropitems] 
+    sc <- preProcess(all1[,feature.names],method = c('center', 'scale'))
+    all1_sc <- cbind(ID = all1$ID, predict(sc, all1[,feature.names]), target = all1$target)
 
-# 12.   Imputation for non-systematic variables
+    # cv_score_11 <- doXGB(train = all1[all1$target >= 0,], preproc = FALSE, cv = 5)
+    # 
 
-# 13.   Feature importance detection
+# 12.   columns removal idea
+    
+# 13.   Benouilli Naive Bayes
+    
+# 14.   Imputation for non-systematic variables
+
+# 15.   Feature importance detection
+
 
 
 
