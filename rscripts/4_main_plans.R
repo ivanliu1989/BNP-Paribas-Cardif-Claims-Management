@@ -220,7 +220,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     
 # 14.   Imputation for non-systematic variables
 
-# 15.   Feature importance detection
+# 15.   Feature selection mRMR
 
 
 
