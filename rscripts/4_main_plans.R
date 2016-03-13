@@ -212,10 +212,17 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all1_sc <- cbind(ID = all1$ID, predict(sc, all1[,feature.names]), target = all1$target)
 
     # cv_score_11 <- doXGB(train = all1[all1$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # 0.458353
 
 # 12.   columns removal idea
+    removeitems <- c('v8','v23','v25','v31','v36','v37','v46','v51','v53','v54','v63','v73','v75','v79','v81',
+                   'v82','v89','v92','v95','v105','v108','v109','v110','v116','v117','v118','v119','v123','v124','v128') # ,'v107'
+    head(all[,removeitems])
+    all_rm <- all[,!names(all) %in% removeitems]
     
+    # cv_score_12 <- doXGB(train = all_rm[all_rm$target >= 0,], preproc = FALSE, cv = 5)
+    # 
+        
 # 13.   Benouilli Naive Bayes
     
 # 14.   Imputation for non-systematic variables
