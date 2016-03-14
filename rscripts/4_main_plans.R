@@ -273,7 +273,7 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     # cv_score_15_1 <- doXGB(train = all[all$target >= 0,names(all) %in% MaxRel_items], preproc = FALSE, cv = 5)
     # 0.4877296
     # cv_score_15_2 <- doXGB(train = all[all$target >= 0,!names(all) %in% mRMR_items_dp], preproc = FALSE, cv = 5)
-    # 
+    # 0.4592082
     
     #     *** MaxRel features ***
     #         Order 	 Fea 	 Name 	 Score
