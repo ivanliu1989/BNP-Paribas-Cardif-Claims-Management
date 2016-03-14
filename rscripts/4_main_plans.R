@@ -1,5 +1,5 @@
 setwd('/Users/ivanliu/Downloads/Kaggle_BNP')
-library(data.table)
+library(data.table);library(caret)
 rm(list=ls());gc()
 source('./BNP-Paribas-Cardif-Claims-Management/func/func_xgboost.R')
 
@@ -221,9 +221,39 @@ nume <- names(all[, !names(all) %in% c('ID', 'target', ordi, cate)])
     all_rm <- all[,!names(all) %in% removeitems]
     
     # cv_score_12 <- doXGB(train = all_rm[all_rm$target >= 0,], preproc = FALSE, cv = 5)
-    # 
+    # 0.458809
         
 # 13.   Benouilli Naive Bayes
+    library(e1071)
+    cate <- c('v3', 'v24', 'v30', 'v31', 'v47', 'v52','v56', 'v66', 'v71', 'v74', 'v75', 'v79', 'v91107', 'v110', 'v112', 'v113', 'v125',
+              'v22_1', 'v22_2', 'v22_3', 'v22_4', 'v56_1', 'v56_2', 'v113_1', 'v113_2', 'v125_1', 'v125_2')
+    
+    for(f in cate){
+        print(f)
+        print(table(all[,f]))
+        # train the model
+        all_dm <- all[,c('target', f)]; all_dm[,f] <- as.factor(all_dm[,f])
+        dummies = model.matrix(target~-1+., data = all_dm)
+        all_nb_temp <- as.data.frame(cbind(target = all_dm$target, dummies))
+        
+        train_nb_temp <- all_nb_temp[all_nb_temp$target >= 0, ]
+        test_nb_temp <- all_nb_temp[all_nb_temp$target < 0, ]
+        # predict
+        nb <- naiveBayes(x=train_nb_temp[,-1], y=factor(train_nb_temp$target, labels="x"), laplace = 0)
+        all[, paste0(f,'_nb')] <- c(predict(nb, newdata=train_nb_temp, type="raw")[,2], predict(nb, newdata=test_nb_temp, type="raw")[,2])
+        
+        print(table(all[, paste0(f,'_nb')] ))
+    }
+    
+    # cv_score_13 <- doXGB(train = all[all$target >= 0,!names(all) %in% cate], preproc = FALSE, cv = 5)
+    # 0.4591532
+    
+    train_py <- fread("./data/train_py.csv", stringsAsFactors = F, data.table = F, na.strings = "")
+    test_py <- fread("./data/test_py.csv", stringsAsFactors = F, data.table = F, na.strings = "")
+    all_nb <- cbind(all[all$target >= 0,!names(all) %in% cate], train_py[, 116:133])
+    all_nb <- all_nb[,-c(142:168)]
+    cv_score_13_2 <- doXGB(train = all_nb[all_nb$target >= 0,], preproc = FALSE, cv = 5)
+    #
     
 # 14.   Imputation for non-systematic variables
 
